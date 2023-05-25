@@ -1,12 +1,7 @@
 <script>
-	/** @type {import('./$types').PageData} */
-	export let data;
 	import { onMount } from 'svelte';
-	import Gateway from './Gateway.svelte';
 
 	let paymentId;
-
-	let gateway;
 
 	let inputEnabled = true;
 
@@ -23,29 +18,20 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		paymentId = urlParams.get('paymentId');
 		if (paymentId != null) {
-			const checkout = await gateway.getPayment(paymentId);
-			amount = checkout.amount;
 			inputEnabled = false;
-			openNewWindow(checkout.paymentUrl);
+			openNewWindow(`/payment?paymentId=${paymentId}`);
 		}
 	});
 
 	const onCheckout = async () => {
-		const checkout =
-			paymentId == null
-				? await gateway.createPayment({
-						amount: amount,
-						currency: 'USDT',
-						merchantReference: 'abc'
-				  })
-				: await gateway.getPayment(paymentId);
 		inputEnabled = false;
-		paymentId = checkout.id;
-		openNewWindow(checkout.paymentUrl);
+		openNewWindow(`/payment?amount=${amount}&currency=USDT&merchantReference=abc`);
+	};
+
+	const onLogout = async () => {
+		location.href = '/sign-in?signout=true';
 	};
 </script>
-
-<Gateway bind:this={gateway} {...data.config} />
 
 <div>
 	<p>Total USDT:</p>
@@ -63,6 +49,10 @@
 		on:change={handleAmountChange}
 	/>
 	<p>
-		<button on:click={onCheckout}> Checkout </button>
+		<button on:click={onCheckout}>Checkout</button>
+	</p>
+
+	<p>
+		<button on:click={onLogout}>Logout</button>
 	</p>
 </div>
