@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const basicAuth = require("express-basic-auth");
 const asyncHandler = require("express-async-handler");
+const cors = require("cors");
 const { NotFoundError } = require("./common/error.js");
 const {
   createPaymentHandler,
@@ -11,6 +12,8 @@ const {
 
 const app = express();
 const port = 3000;
+
+app.use(cors());
 
 // Define the basic authentication middleware
 const basicAuthMiddleware = basicAuth({
