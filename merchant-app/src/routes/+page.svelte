@@ -60,7 +60,7 @@
 			value={amount}
 			min="0"
 			max="100"
-			step="0.000001"
+			step="0.01"
 			class="w-auto mt-2 px-3 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring"
 			placeholder="Enter amount"
 			disabled={!inputEnabled}
