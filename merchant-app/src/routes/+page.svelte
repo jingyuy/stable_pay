@@ -19,13 +19,29 @@
 		paymentId = urlParams.get('paymentId');
 		if (paymentId != null) {
 			inputEnabled = false;
-			openNewWindow(`/payment?paymentId=${paymentId}`);
+			const response = await fetch(`/api/payment?paymentId=${paymentId}`, {
+				method: 'GET'
+			});
+			const { paymentUrl } = await response.json();
+			window.open(paymentUrl, '_blank', 'width=600,height=400');
 		}
 	});
 
 	const onCheckout = async () => {
 		inputEnabled = false;
-		openNewWindow(`/payment?amount=${amount}&currency=USDT&merchantReference=abc`);
+		const response = await fetch('/api/payment', {
+			method: 'POST',
+			body: JSON.stringify({
+				amount: amount,
+				currency: 'USDT',
+				merchantReference: 'abc'
+			}),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		const { paymentUrl } = await response.json();
+		window.open(paymentUrl, '_blank', 'width=600,height=400');
 	};
 
 	const onLogout = async () => {
@@ -33,26 +49,29 @@
 	};
 </script>
 
-<div>
-	<p>Total USDT:</p>
-	<input
-		type="number"
-		id="amount"
-		name="amount"
-		value={amount}
-		min="0"
-		max="100"
-		step="0.000001"
-		class="w-auto mt-2 px-3 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring"
-		placeholder="Enter amount"
-		disabled={!inputEnabled}
-		on:change={handleAmountChange}
-	/>
-	<p>
-		<button on:click={onCheckout}>Checkout</button>
-	</p>
+<div class="flex justify-center items-center v-screen">
+	<div class="bg-gray-200 p-4">
+		<!-- Your content here -->
+		<p>Total USDT:</p>
+		<input
+			type="number"
+			id="amount"
+			name="amount"
+			value={amount}
+			min="0"
+			max="100"
+			step="0.000001"
+			class="w-auto mt-2 px-3 py-2 placeholder-gray-400 text-gray-700 relative bg-white rounded text-sm border-0 shadow outline-none focus:outline-none focus:ring"
+			placeholder="Enter amount"
+			disabled={!inputEnabled}
+			on:change={handleAmountChange}
+		/>
+		<p>
+			<button class="flex" on:click={onCheckout}>Checkout</button>
+		</p>
 
-	<p>
-		<button on:click={onLogout}>Logout</button>
-	</p>
+		<p>
+			<button class="flex" on:click={onLogout}>Logout</button>
+		</p>
+	</div>
 </div>

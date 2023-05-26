@@ -1,6 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import { USER_EMAIL, USER_PWD, USER_SESSION } from '$env/static/private';
 const unProtectedRoutes = ['/sign-in'];
+
 export const handle = async ({ event, request, resolve }) => {
 	const sessionId = event.cookies.get('session_id');
 	if (!sessionId && !unProtectedRoutes.includes(event.url.pathname)) {
